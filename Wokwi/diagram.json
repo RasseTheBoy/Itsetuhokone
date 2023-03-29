@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "author": "Rasmus Ohert",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-pi-pico",
+      "id": "pico",
+      "top": 29.33,
+      "left": -132,
+      "attrs": { "env": "micropython-20220618-v1.19.1" }
+    },
+    { "type": "wokwi-gnd", "id": "gnd1", "top": 45.13, "left": -200.98, "attrs": {} },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": 16.11,
+      "left": -373.47,
+      "rotate": 270,
+      "attrs": { "color": "red" }
+    },
+    { "type": "wokwi-vcc", "id": "vcc2", "top": -51.52, "left": -262.67, "attrs": {} },
+    { "type": "wokwi-ks2e-m-dc5", "id": "relay1", "top": -3.99, "left": -298.73, "attrs": {} },
+    { "type": "wokwi-ks2e-m-dc5", "id": "relay2", "top": 91.47, "left": -293.66, "attrs": {} },
+    { "type": "wokwi-gnd", "id": "gnd2", "top": 137.07, "left": -241.78, "attrs": {} },
+    {
+      "type": "wokwi-text",
+      "id": "motor1 cw",
+      "top": 29.89,
+      "left": -576.22,
+      "attrs": { "text": "Kuljetin (M1): Myötäpäivään" }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "nostomotti",
+      "top": 276.36,
+      "left": -484.8,
+      "attrs": { "text": "Nostomotti" }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "motor1 ccw",
+      "top": 60.19,
+      "left": -577.15,
+      "attrs": { "text": "Kuljetin (M1): Vastapäivään" }
+    },
+    { "type": "wokwi-vcc", "id": "vcc1", "top": 49.65, "left": -257.48, "attrs": {} },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": 47.72,
+      "left": -372.44,
+      "rotate": 270,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-servo",
+      "id": "servo1",
+      "top": 223.93,
+      "left": -388.88,
+      "rotate": 180,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [ "gnd1:GND", "relay1:COIL1", "black", [ "v0" ] ],
+    [ "relay1:NO2", "led2:A", "green", [ "h-12.61", "v54.45" ] ],
+    [ "relay1:NO1", "led2:C", "green", [ "v0" ] ],
+    [ "pico:GP5", "relay1:COIL2", "green", [ "h-23.87", "v-104.79", "h-84.22" ] ],
+    [ "pico:GP6", "relay2:COIL2", "green", [ "h-37.94", "v52.31" ] ],
+    [ "gnd1:GND", "relay1:P1", "black", [ "v-7.57", "h-62.95" ] ],
+    [ "vcc1:VCC", "relay2:P2", "red", [ "v0" ] ],
+    [ "led3:C", "relay2:NO1", "green", [ "h35.9", "v46.45" ] ],
+    [ "led3:A", "relay2:NO2", "green", [ "h0" ] ],
+    [ "relay2:P1", "gnd2:GND", "green", [ "v0" ] ],
+    [ "relay2:COIL1", "gnd2:GND", "green", [ "v0" ] ],
+    [ "relay1:P2", "vcc2:VCC", "green", [ "v0" ] ],
+    [ "servo1:PWM", "pico:GP8", "green", [ "h67.75", "v-139.73" ] ]
+  ],
+  "dependencies": {}
+}
