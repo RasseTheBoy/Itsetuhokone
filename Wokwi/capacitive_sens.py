@@ -2,13 +2,11 @@ from machine    import Pin
 
 from class_copy     import Base
 
-
-
 class CapacitiveSensor(Base):
     def __init__(self, pin_num:int, name:str='capacitive sensor', debug_print:bool=False):
         super().__init__(name, debug_print)
 
-        self.pin = Pin(pin_num, Pin.PULL_DOWN)
+        self.pin = Pin(pin_num, Pin.IN, Pin.PULL_UP)
 
         self._last_state = self.read()
 
@@ -33,7 +31,9 @@ class CapacitiveSensor(Base):
 
     def read(self) -> int:
         """Read current pin value."""
-        return self.pin.value()
+        if self.pin.value() == 1:
+            return False
+        return True
 
 
     def config(self, **kwargs):

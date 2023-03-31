@@ -2,7 +2,6 @@ from machine import Pin
 
 from class_copy     import Base
 
-
 class Motor(Base):
     """Simple controller for a single motor with two relays contorlling it's rotation."""
     def __init__(self, relayCw_pin_num:int, relayCCw_pin_num:int, name:str='motor', debug_print:bool=False):
@@ -37,6 +36,3 @@ class Motor(Base):
         """Configure class variables:
         `name`, `debug_print`"""
         self._base_config(**kwargs)
-
-
-# m = Motor(Pin(0, Pin.OUT), Pin(1, Pin.OUT)) # For debugging
