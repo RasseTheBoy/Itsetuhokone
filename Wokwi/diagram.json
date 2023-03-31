@@ -10,57 +10,73 @@
       "left": -132,
       "attrs": { "env": "micropython-20220618-v1.19.1" }
     },
-    { "type": "wokwi-gnd", "id": "gnd1", "top": 45.13, "left": -200.98, "attrs": {} },
+    { "type": "wokwi-gnd", "id": "gnd1", "top": -48.21, "left": -330.95, "attrs": {} },
     {
       "type": "wokwi-led",
       "id": "led2",
-      "top": 16.11,
-      "left": -373.47,
+      "top": -77.23,
+      "left": -503.44,
       "rotate": 270,
       "attrs": { "color": "red" }
     },
-    { "type": "wokwi-vcc", "id": "vcc2", "top": -51.52, "left": -262.67, "attrs": {} },
-    { "type": "wokwi-ks2e-m-dc5", "id": "relay1", "top": -3.99, "left": -298.73, "attrs": {} },
-    { "type": "wokwi-ks2e-m-dc5", "id": "relay2", "top": 91.47, "left": -293.66, "attrs": {} },
-    { "type": "wokwi-gnd", "id": "gnd2", "top": 137.07, "left": -241.78, "attrs": {} },
+    { "type": "wokwi-vcc", "id": "vcc2", "top": -144.86, "left": -392.64, "attrs": {} },
+    { "type": "wokwi-ks2e-m-dc5", "id": "relay1", "top": -97.33, "left": -428.7, "attrs": {} },
+    { "type": "wokwi-ks2e-m-dc5", "id": "relay2", "top": -1.87, "left": -423.63, "attrs": {} },
+    { "type": "wokwi-gnd", "id": "gnd2", "top": 43.73, "left": -371.75, "attrs": {} },
     {
       "type": "wokwi-text",
       "id": "motor1 cw",
-      "top": 29.89,
-      "left": -576.22,
+      "top": -63.45,
+      "left": -706.19,
       "attrs": { "text": "Kuljetin (M1): Myötäpäivään" }
     },
     {
       "type": "wokwi-text",
-      "id": "nostomotti",
-      "top": 276.36,
-      "left": -484.8,
+      "id": "Nostomotti (M2)",
+      "top": 87.61,
+      "left": -608.22,
       "attrs": { "text": "Nostomotti" }
     },
     {
       "type": "wokwi-text",
+      "id": "dip switch text",
+      "top": 200.37,
+      "left": -502.93,
+      "attrs": { "text": "1. Anturi a1\n2. Anturi a2\n3. Anturi b1\n4. Anturi b2" }
+    },
+    {
+      "type": "wokwi-text",
       "id": "motor1 ccw",
-      "top": 60.19,
-      "left": -577.15,
+      "top": -33.15,
+      "left": -707.12,
       "attrs": { "text": "Kuljetin (M1): Vastapäivään" }
     },
-    { "type": "wokwi-vcc", "id": "vcc1", "top": 49.65, "left": -257.48, "attrs": {} },
+    { "type": "wokwi-vcc", "id": "vcc1", "top": -43.69, "left": -387.45, "attrs": {} },
     {
       "type": "wokwi-led",
       "id": "led3",
-      "top": 47.72,
-      "left": -372.44,
+      "top": -45.62,
+      "left": -502.41,
       "rotate": 270,
       "attrs": { "color": "red" }
     },
     {
       "type": "wokwi-servo",
       "id": "servo1",
-      "top": 223.93,
-      "left": -388.88,
+      "top": 35.18,
+      "left": -512.63,
       "rotate": 180,
       "attrs": {}
-    }
+    },
+    {
+      "type": "wokwi-dip-switch-8",
+      "id": "sw1",
+      "top": 208.51,
+      "left": -348.7,
+      "rotate": 90,
+      "attrs": {}
+    },
+    { "type": "wokwi-gnd", "id": "gnd3", "top": 292.22, "left": -380.54, "attrs": {} }
   ],
   "connections": [
     [ "gnd1:GND", "relay1:COIL1", "black", [ "v0" ] ],
@@ -75,7 +91,15 @@
     [ "relay2:P1", "gnd2:GND", "green", [ "v0" ] ],
     [ "relay2:COIL1", "gnd2:GND", "green", [ "v0" ] ],
     [ "relay1:P2", "vcc2:VCC", "green", [ "v0" ] ],
-    [ "servo1:PWM", "pico:GP8", "green", [ "h67.75", "v-139.73" ] ]
+    [ "servo1:PWM", "pico:GP8", "green", [ "h67.75", "v-139.73" ] ],
+    [ "pico:GP10", "sw1:1b", "green", [ "h-127.75", "v33.99" ] ],
+    [ "gnd3:GND", "sw1:1a", "black", [ "v0" ] ],
+    [ "gnd3:GND", "sw1:2a", "black", [ "v0" ] ],
+    [ "gnd3:GND", "sw1:3a", "black", [ "v0" ] ],
+    [ "gnd3:GND", "sw1:4a", "black", [ "v0" ] ],
+    [ "sw1:2b", "pico:GP12", "green", [ "h38.06", "v-37.36" ] ],
+    [ "sw1:3b", "pico:GP14", "green", [ "h52.82", "v-16.88" ] ],
+    [ "sw1:4b", "pico:GP15", "green", [ "h64.86", "v-7.89" ] ]
   ],
   "dependencies": {}
 }
