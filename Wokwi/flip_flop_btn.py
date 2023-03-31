@@ -20,7 +20,7 @@ class FlipFlopBtn(Base):
 
     def check(self):
         """Checks state of flip_flop.
-        Returns `True` if flip-flop is set; Else `False`"""
+        Returns `True` if flip-flop is set; else `False`"""
         if not self.state:
             if self.read_pin(self._set_pin) and not self.read_pin(self._reset_pin):
                 self.state = True
