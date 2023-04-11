@@ -1,7 +1,8 @@
-from machine import Pin
-from utime   import sleep
+from machine import Pin # type:ignore
+from utime   import sleep # type:ignore
 
 from capacitive_sens    import CapacitiveSensor
+from csv_file_editor    import CSVFileEditor
 from flip_flop_btn  import FlipFlopBtn
 from class_copy     import Base
 from motor  import Motor
@@ -14,11 +15,11 @@ class Itsetuhokone(Base):
 
         self.pprint('Initializing')
 
-        # Set starting state (0 = Idle)
-        self.state = 0
+        self.sleep_time = sleep_time # Sleep time between loops
+        
+        self.state = 0 # Set starting state (0 = Idle)
 
-        # For debugging
-        self.on_board_led = Pin(25, Pin.OUT)
+        self.on_board_led = Pin(25, Pin.OUT) # For debugging
 
         # Moottorit
         self.kuljetin = Motor(5, 6, 'Kuljetin', debug_print=debug_print) # Kuljetin moottori
@@ -30,13 +31,27 @@ class Itsetuhokone(Base):
         self.anturi_b1 = CapacitiveSensor(14, 'Anturi b1', debug_print=debug_print)
         self.anturi_b2 = CapacitiveSensor(15, 'Anturi b2', debug_print=debug_print)
 
+        self.anturi_lst = [self.anturi_a1, self.anturi_a2, self.anturi_b1, self.anturi_b2]
+
         # Start/Stop napit
         self.start_stop = FlipFlopBtn(2,3, name='Start/Stop napit', debug_print=debug_print)
+
+        # CSV tiedosto
+        _header_lst = [anturi.get_name() for anturi in self.anturi_lst]
+        self.data_history_csv = CSVFileEditor('sensor_data.csv', _header_lst, debug_print=debug_print)
+
+        self.pprint('Initialized')
 
 
     def stprint(self, text): # State print
         """Prints text with the state number included"""
         print(f'Itsetuhokone: [{self.state}] - {text}')
+
+    
+    def _update_csv_data(self):
+        """Updates data to CSV file"""
+        _data_lst = [anturi.read() for anturi in self.anturi_lst] # Reads values from sensors
+        self.data_history_csv.append_data(_data_lst) # Appends data to CSV file
 
 
     def run(self):
@@ -45,6 +60,8 @@ class Itsetuhokone(Base):
 
         while True:
             self.on_board_led.toggle()
+
+            self._update_csv_data() # Updates data to CSV file
 
             if self.state == 0: # Idle
                 self.stprint('Idle')
@@ -112,7 +129,7 @@ class Itsetuhokone(Base):
                 self.state = 0
                 self.stprint('Stopping')
 
-            sleep(0.3)
+            sleep(self.sleep_time)
 
 
 
