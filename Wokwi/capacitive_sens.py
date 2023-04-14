@@ -1,6 +1,8 @@
-from machine    import Pin
 
 from class_copy     import Base
+from machine    import Pin # type:ignore
+
+
 
 class CapacitiveSensor(Base):
     def __init__(self, pin_num:int, name:str='capacitive sensor', debug_print:bool=False):
