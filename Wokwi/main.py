@@ -1,4 +1,6 @@
-from machine import Pin # type:ignore
+# Author: Rasmus Ohert
+
+from machine import Pin, Timer # type:ignore
 from utime   import sleep # type:ignore
 
 from capacitive_sens    import CapacitiveSensor
@@ -10,7 +12,13 @@ from servo  import Servo
 
 
 class Itsetuhokone(Base):
+    """Main class for Itsetuhokone project."""
     def __init__(self, sleep_time:float=0.3, debug_print:bool=False):
+        """Initializes class.
+
+        Parameters:
+        - `sleep_time` (float): Sleep time between loops. Default: `0.3`
+        - `debug_print` (bool): If `True`, prints debug messages. Default: `False`"""
         super().__init__('Itsetuhokone', debug_print=debug_print)
 
         self.pprint('Initializing')
@@ -19,7 +27,11 @@ class Itsetuhokone(Base):
         
         self.state = 0 # Set starting state (0 = Idle)
 
-        self.on_board_led = Pin(25, Pin.OUT) # For debugging
+        # Onboard LED; toggles every second
+        # Mainly for debugging purposes; can be removed
+        self.on_board_led = Pin(25, Pin.OUT)
+        onboard_led_timer = Timer(-1)
+        onboard_led_timer.init(period=1000, mode=Timer.PERIODIC, callback=lambda t: self.on_board_led.toggle())
 
         # Moottorit
         self.kuljetin = Motor(5, 6, 'Kuljetin', debug_print=debug_print) # Kuljetin moottori
@@ -43,8 +55,11 @@ class Itsetuhokone(Base):
         self.pprint('Initialized')
 
 
-    def stprint(self, text): # State print
-        """Prints text with the state number included"""
+    def stprint(self, text):
+        """Prints text with the state number included
+        
+        Parameters:
+        - `text` (Any): Text to print"""
         print(f'Itsetuhokone: [{self.state}] - {text}')
 
     
@@ -77,7 +92,10 @@ class Itsetuhokone(Base):
 
     
     def _move_to_middle(self, from_pos:str):
-        """Moves to middle position (from `A` or `B`)"""
+        """Moves to middle position (from `A` or `B`)
+        
+        Parameters:
+        - `from_pos` (str): Position to move from (`A` or `B`)"""
         self.stprint('Moving to middle position')
         while not self.anturi_a2.read() and not self.anturi_b2.read():
             if from_pos == 'A':
@@ -98,8 +116,6 @@ class Itsetuhokone(Base):
         self.pprint('Running...')
 
         while True:
-            self.on_board_led.toggle()
-
             self._update_csv_data() # Updates data to CSV file
 
             if self.state == 0: # Idle

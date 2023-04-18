@@ -1,7 +1,5 @@
+from class_copy import Base
 from machine    import Pin, PWM # type:ignore
-from utime  import sleep # type:ignore
-
-from class_copy     import Base
 
 class Servo(Base):
     def __init__(self, pin_out:int, freq:int=50, name:str='servo', min_pos_val:int=1000, max_pos_val:int=9000, debug_print:bool=False):

@@ -1,15 +1,18 @@
-<<<<<<< Updated upstream
-=======
-from machine    import Pin # type:ignore
->>>>>>> Stashed changes
+# Author: Rasmus Ohert
 
-from class_copy     import Base
+from class_copy import Base
 from machine    import Pin # type:ignore
-
 
 
 class CapacitiveSensor(Base):
+    """Simple capacitive sensor class."""
     def __init__(self, pin_num:int, name:str='capacitive sensor', debug_print:bool=False):
+        """Initializes class.
+        
+        Parameters:
+        - `pin_num` (int): Pin number to use.
+        - `name` (str): Name of class instance. Default: 'capacitive sensor'
+        - `debug_print` (bool): If `True`, prints debug messages. Default: `False`"""
         super().__init__(name, debug_print)
 
         self.pin = Pin(pin_num, Pin.IN, Pin.PULL_UP)

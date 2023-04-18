@@ -1,5 +1,7 @@
-from class_copy     import Base
-from utime  import ticks_ms, ticks_diff
+# Author: Rasmus Ohert
+
+from class_copy import Base
+from utime  import ticks_ms, ticks_diff # type:ignore
 
 
 class CSVFileEditor(Base):
@@ -8,12 +10,12 @@ class CSVFileEditor(Base):
         """Initializes CSVFileEditor
         
         Parameters:
-            `filename` (str): Name of the file
-            `headers` (list[str]): List of headers
-            `write_wait_time_s` (int): Time between writing data to file (in seconds)
-            `add_timer` (bool): Add timer to data
-            `separator` (str): Separator between values
-            `debug_print` (bool): Print debug info"""
+        - `filename` (str): Name of the file
+        - `headers` (list[str]): List of headers
+        - `write_wait_time_s` (int): Time between writing data to file (in seconds). Default: `1`
+        - `add_timer` (bool): Add timer to data. Default: `True`
+        - `separator` (str): Separator between values in file. Default: `';'`
+        - `debug_print` (bool): Print debug info. Default: `False`"""
         
         super().__init__(filename, debug_print=debug_print)
         
@@ -28,7 +30,7 @@ class CSVFileEditor(Base):
         self._setup_file()
 
     
-    def _setup_file(self):
+    def _setup_file(self) -> None:
         """Sets up file if it doesn't exist, is empty or has wrong headers"""
         self.pprint('Setting up file')
 
@@ -41,14 +43,14 @@ class CSVFileEditor(Base):
         self.pprint('File setup done')
         
 
-    def _read_as(self, ret_as:str='r'):
+    def _read_as(self, ret_as:str='r') -> list | None:
         """Reads file, and returns it as a list of rows or as collumns
         
         Parameters:
-            `ret_as` (str): Row (`r`) or collumn (`c`)
+        - `ret_as` (str): Row (`r`) or collumn (`c`)
             
         Returns:
-            `list` or `None`"""
+        - `list` or `None`"""
         
         def read_file():
             """Reads file; returns None if file doesn't exist"""
@@ -72,7 +74,10 @@ class CSVFileEditor(Base):
         
     
     def write(self, text:str):
-        """Writes text to file"""
+        """Writes text to file
+        
+        Parameters:
+        - `text` (str): Text to write"""
         with open(self._filename, 'w', encoding='utf-8') as f:
             f.write(text)
         
@@ -80,7 +85,10 @@ class CSVFileEditor(Base):
 
 
     def append_data(self, data:list):
-        """Appends data to file if given time has passed"""
+        """Appends data to file if given time has passed
+        
+        Parameters:
+        - `data` (list): Data to append to file"""
 
         if ticks_diff(ticks_ms(), self._last_write_time) < self._write_wait_time_s * 1000: # If time hasn't passed
             return

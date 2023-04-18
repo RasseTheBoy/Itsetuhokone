@@ -1,10 +1,19 @@
-from machine import Pin # type:ignore
+# Author: Rasmus Ohert
 
-from class_copy     import Base
+from class_copy import Base
+from machine    import Pin # type:ignore
+
 
 class Motor(Base):
     """Simple controller for a single motor with two relays contorlling it's rotation."""
     def __init__(self, relayCw_pin_num:int, relayCCw_pin_num:int, name:str='motor', debug_print:bool=False):
+        """Initializes class.
+
+        Parameters:
+        - `relayCw_pin_num` (int): Pin number to use for clockwise rotation.
+        - `relayCCw_pin_num` (int): Pin number to use for counterclockwise rotation.
+        - `name` (str): Name of class instance. Default: 'motor'
+        - `debug_print` (bool): If `True`, prints debug messages. Default: `False`"""
         super().__init__(name, debug_print)
         
         self.relayCw    = Pin(relayCw_pin_num, Pin.OUT)
@@ -25,11 +34,14 @@ class Motor(Base):
         self.pprint('Running counterclockwise')
     
 
-    def stop_all(self, dopprint:bool=True):
-        """Stops motor from spinning"""
+    def stop_all(self, do_print:bool=True):
+        """Stops motor from spinning
+        
+        Parameters:
+        - `do_print` (bool): If `True`, prints debug message. Default: `True`"""
         self.relayCw.off()
         self.relayCCw.off()
-        self.pprint('Stopped', dopprint)
+        self.pprint('Stopped', do_print)
 
 
     def config(self, **kwargs):

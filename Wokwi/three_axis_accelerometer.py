@@ -1,3 +1,4 @@
+# Author: Rasmus Ohert
 
 from class_copy import Base
 from machine import ADC, Pin # type:ignore
@@ -19,7 +20,6 @@ class Accelerometer(Base):
             `simple_read` (bool): If True, returns values between 0 and `simple_max_val`. Else returns values between 0 and 65535. Default: True
             `simple_max_val` (int): Maximum value of accelerometer. Default: 100
             `debug_print` (bool): If True, prints debug messages. Default: False"""
-        
         super().__init__(name, debug_print)
 
         # Setup class variables
@@ -41,8 +41,11 @@ class Accelerometer(Base):
         self.xyz_last_values = [self._read_pin_value(pin) for pin in self._xyz_pins]
 
 
-    def _read_pin_value(self, pin):
-        """Reads value from pin"""
+    def _read_pin_value(self, pin:Pin):
+        """Reads value from pin
+        
+        Parameters:
+        - `pin` (machine.Pin): Pin to read from"""
         if pin is None:
             ret_val = 0
         else:
@@ -57,8 +60,8 @@ class Accelerometer(Base):
         """Updates values of accelerometer
         
         Parameters:
-            `ret_type` (type): Type of returned values. Default: float
-            `get_vals` (str): 'diff' or 'new'. Default: 'diff'"""
+        - `ret_type` (type): Type of returned values. Default: `float`
+        - `get_vals` (str): 'diff' or 'new'. Default: 'diff'"""
 
         # Read new values
         xyz_new_values = [self._read_pin_value(pin) for pin in self._xyz_pins]
