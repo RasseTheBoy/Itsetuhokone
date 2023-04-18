@@ -1,5 +1,5 @@
-from machine    import Pin, PWM
-from utime  import sleep
+from machine    import Pin, PWM # type:ignore
+from utime  import sleep # type:ignore
 
 from class_copy     import Base
 
@@ -15,20 +15,20 @@ class Servo(Base):
         self.debug_print    = debug_print
 
 
-    def reset_pos(self, pos:str='min'):
+    def move_to_pos(self, pos:str='min'):
         """Reset position to `'min'` or `'max'` position"""
         if pos not in ('min', 'max'):
             self.pprint(f'Not a valid position: {pos}')
             return
 
-        self.pprint(f'Reseting to position: {pos}')
+        self.pprint(f'Moving to pos: {pos}')
         if pos == 'min':
-            self.move_to(self.min_pos_val)
+            self.move_to_int(self.min_pos_val)
         elif pos == 'max':
-            self.move_to(self.max_pos_val)
+            self.move_to_int(self.max_pos_val)
 
 
-    def move_to(self, value:int):
+    def move_to_int(self, value:int):
         """Move to a specified location.
         `min_pos_value` <= `value` <= `max_pos_value`"""
         if value > 0:

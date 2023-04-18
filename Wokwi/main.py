@@ -53,10 +53,36 @@ class Itsetuhokone(Base):
         _data_lst = [anturi.read() for anturi in self.anturi_lst] # Reads values from sensors
         self.data_history_csv.append_data(_data_lst) # Appends data to CSV file
 
+    
+    def _lift_and_weigh(self):
+            sleep(1)
+            self.nostomotti.move_to_pos('max')
+
+            # Add code for vaaka here
+            self.stprint('Punnitse...')
+            sleep(1)
+
+            self.nostomotti.move_to_pos('min')
+            sleep(1)
+
+    
+    def _move_to_start(self):
+        """Moves to start position (A1)"""
+        self.stprint('Moving to start position')
+        while not self.anturi_a1.read():
+            self.kuljetin.run_cw()
+
+        self.kuljetin.stop_all()
+        self.stprint('At start position')
+
+    
+    def _move_to_middle(self, from_pos:str):
+        """Moves to middle position (from A1 or B1)"""
+
 
     def run(self):
         """Runs main code"""
-        self.pprint('Running')
+        self.pprint('Running...')
 
         while True:
             self.on_board_led.toggle()
@@ -70,49 +96,45 @@ class Itsetuhokone(Base):
 
             elif self.state == 10: # Start:
                 self.stprint('Starting')
-                self.state = 11
-
-            elif self.state == 11: # Input options
-                self.state = 20
-
-            elif self.state == 20: # Tarkista tallennus
-                self.state = 21
-
-            elif self.state == 21: # Luo tallennustiedosto
-                self.state = 22
-
-            elif self.state == 22: # Aloita tallennus
                 self.state = 23
 
             elif self.state == 23: # Aja alkuasemaan
-                self.state = 24
-
-            elif self.state == 24: # Tarkistaa anturidatan (optional)
-                self.state = 30
-
-            elif self.state == 30: # Aloita ajosekvenssi
-                self.stprint('At 30!')
+                self._move_to_start()
                 self.state = 31
 
             elif self.state == 31: # Tuote keskelle (A->B)
+                self._move_to_middle()
+
                 self.state = 32
 
             elif self.state == 32: # Vaaka ylös/Punnitse
-                self.state = 33
+                self._lift_and_weigh()
 
-            elif self.state == 33: # Vaaka alas
                 self.state = 34
 
-            elif self.state == 34: # Tuote päätyyns (A->B)
+            elif self.state == 34: # Tuote päätyyn (A->B)
+                while not self.anturi_b1.read():
+                    self.kuljetin.run_ccw()
+
+                self.kuljetin.stop_all()
+                self.stprint('At end position')
+
+                sleep(1) # Wait a second before going back to middle
+
                 self.state = 35
 
             elif self.state == 35: # Tuote keskelle (B->A)
+                while not self.anturi_a2.read() and not self.anturi_b2.read():
+                    self.kuljetin.run_cw()
+
+                self.kuljetin.stop_all()
+                self.stprint('At middle position')
+
                 self.state = 36
 
             elif self.state == 36: # Punnitse
-                self.state = 37
+                self._lift_and_weigh()
 
-            elif self.state == 37: # Vaaka alas
                 self.state = 38
 
             elif self.state == 38: # Tuote päätyyn (B->A)

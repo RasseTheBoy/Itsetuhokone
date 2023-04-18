@@ -1,3 +1,7 @@
+<<<<<<< Updated upstream
+=======
+from machine    import Pin # type:ignore
+>>>>>>> Stashed changes
 
 from class_copy     import Base
 from machine    import Pin # type:ignore
