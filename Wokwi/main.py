@@ -77,7 +77,20 @@ class Itsetuhokone(Base):
 
     
     def _move_to_middle(self, from_pos:str):
-        """Moves to middle position (from A1 or B1)"""
+        """Moves to middle position (from `A` or `B`)"""
+        self.stprint('Moving to middle position')
+        while not self.anturi_a2.read() and not self.anturi_b2.read():
+            if from_pos == 'A':
+                self.kuljetin.run_ccw()
+            elif from_pos == 'B':
+                self.kuljetin.run_cw()
+            else:
+                self.kuljetin.stop_all()
+                self.stprint(f'[!] Invalid from_pos: {from_pos} [!]')
+                return
+
+        self.kuljetin.stop_all()
+        self.stprint('At middle position')
 
 
     def run(self):
@@ -103,7 +116,7 @@ class Itsetuhokone(Base):
                 self.state = 31
 
             elif self.state == 31: # Tuote keskelle (A->B)
-                self._move_to_middle()
+                self._move_to_middle('A')
 
                 self.state = 32
 
@@ -124,11 +137,7 @@ class Itsetuhokone(Base):
                 self.state = 35
 
             elif self.state == 35: # Tuote keskelle (B->A)
-                while not self.anturi_a2.read() and not self.anturi_b2.read():
-                    self.kuljetin.run_cw()
-
-                self.kuljetin.stop_all()
-                self.stprint('At middle position')
+                self._move_to_middle('B')
 
                 self.state = 36
 

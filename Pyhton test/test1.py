@@ -1,4 +1,9 @@
 
-lst1:list[int|None] = [11, 12, 13]
+i:float = 50.0
 
-print(lst1.count(None))
+dec_len = 2 # Decimal length
+
+i = round(i, dec_len)
+
+print(i)
+# print(f'{i:.{dec_len}f}')
