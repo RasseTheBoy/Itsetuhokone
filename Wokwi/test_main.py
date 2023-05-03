@@ -76,4 +76,4 @@ def read_digitals_and_analogs(dig_pin_num_lst:list[int]|int=[], ana_pin_num_lst:
 # read_digital(digital_pin))
 # read_digital_and_analog(digital_pin, analog_pin)
 
-read_digitals_and_analogs(0)
+read_digitals_and_analogs(ana_pin_num_lst=28)
