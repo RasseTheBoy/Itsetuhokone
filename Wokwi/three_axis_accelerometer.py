@@ -56,33 +56,41 @@ class Accelerometer(Base):
         return ret_val
     
 
-    def update(self, ret_type:type=float, get_vals:str='diff') -> list:
+    def _format_output(self, xyz_vals:list[float|int]) -> str:
+        """Formats output
+        
+        Parameters:
+        - `xyz_vals` (list[float|int]): List of x, y and z values"""
+        xyz = 'x y z'.split(' ')
+        return ' '.join([f'{xyz[i]}: {xyz_vals[i]}' for i in range(3)])
+
+    
+
+    def update(self, ret_type:type=float, get_vals:str='new') -> list:
         """Updates values of accelerometer
         
         Parameters:
         - `ret_type` (type): Type of returned values. Default: `float`
-        - `get_vals` (str): 'diff' or 'new'. Default: 'diff'"""
+        - `get_vals` (str): 'diff' or 'new'. Default: 'new'"""
 
         # Read new values
         xyz_new_values = [self._read_pin_value(pin) for pin in self._xyz_pins]
-
-        if get_vals == 'new': 
-            self.pprint(f'xyz_new_values: {xyz_new_values}')
-
+            
         # Compare if values have changed, save the difference and update last state
         xyz_diff_values = [new - last for new, last in zip(xyz_new_values, self.xyz_last_values)]
         self.xyz_last_values = xyz_new_values
 
-        if get_vals == 'diff':
-            self.pprint(f'xyz_diff_values: {xyz_diff_values}')
-
+        # Print values and set return value
         if get_vals == 'new':
+            self.pprint(f'xyz_new_values: {self._format_output(xyz_new_values)}')
             ret_val_lst = xyz_new_values
         elif get_vals == 'diff':
+            self.pprint(f'xyz_diff_values: {self._format_output(xyz_diff_values)}')
             ret_val_lst = xyz_diff_values
         else:
             raise ValueError(f'Invalid value for get_vals: {get_vals}')
 
+        # Return values
         if ret_type == float:
             return [round(diff, self.decimal_len) for diff in ret_val_lst]
         elif ret_type == int:
