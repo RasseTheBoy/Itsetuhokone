@@ -55,4 +55,6 @@ def hold_motor_on(motor_pin_num:int, time_s:int):
 
 
 hold_motor_on(0, 5)
+sleep(1)
+hold_motor_on(1,5)
 # keep_motor_on(15)

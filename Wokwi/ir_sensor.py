@@ -20,9 +20,13 @@ class IRSensor(Base):
         self._last_state = self.read()
 
     
-    def check(self) -> bool:
-        """Checks if value has changed since last check.
-        Returns `True` if it has changed, else `False`."""
+    def update(self, get_val:str='raw') -> int|bool:
+        """Updates sensor read value. 
+
+        Parameters:
+        - `get_val` (str): What to return. Default: `'raw'`
+            - `'raw'`: Returns raw (`int`) value from pin
+            - `'changed'`: Returns `True` if value has changed, else `False`"""
         
         _current_state = self.read()
 
@@ -35,11 +39,19 @@ class IRSensor(Base):
         # Update last state
         self._last_state = _current_state
 
-        return _changed
+        # Return value
+        if get_val == 'raw':
+            return self.pin.value()
+        elif get_val == 'changed':
+            return _changed
+        else:
+            raise ValueError(f'Invalid return value given: {get_val}')
 
 
-    def read(self) -> int:
-        """Read current pin value."""
+    def read(self) -> bool:
+        """Read current pin value.
+        
+        Returns `True` if value is `0`, else `False`."""
         if self.pin.value() == 1:
             return False
         return True

@@ -3,17 +3,20 @@
 from machine import Pin, Timer # type:ignore
 from utime   import sleep # type:ignore
 
-from capacitive_sens    import CapacitiveSensor
+from three_axis_accelerometer   import Accelerometer
 from csv_file_editor    import CSVFileEditor
 from flip_flop_btn  import FlipFlopBtn
+from force_sensor   import ForceSensor
 from class_copy     import Base
+from ir_sensor  import IRSensor
+from sdcard     import SDCardSetup
 from motor  import Motor
 from servo  import Servo
 
 
 class Itsetuhokone(Base):
     """Main class for Itsetuhokone project."""
-    def __init__(self, sleep_time:float=0.3, debug_print:bool=False):
+    def __init__(self, sleep_time:float=0.3, csv_add_timer:bool=True, debug_print:bool=False):
         """Initializes class.
 
         Parameters:
@@ -28,29 +31,38 @@ class Itsetuhokone(Base):
         self.state = 0 # Set starting state (0 = Idle)
 
         # Onboard LED; toggles every second
-        # Mainly for debugging purposes; can be removed
+        # Mainly for debugging purposes; can be removed/disabled if needed
         self.on_board_led = Pin(25, Pin.OUT)
         onboard_led_timer = Timer(-1)
         onboard_led_timer.init(period=1000, mode=Timer.PERIODIC, callback=lambda t: self.on_board_led.toggle())
 
         # Moottorit
-        self.kuljetin = Motor(5, 6, 'Kuljetin', debug_print=debug_print) # Kuljetin moottori
-        self.nostomotti = Servo(0, name='Nostomotti', min_pos_val=1500, max_pos_val=8150, debug_print=debug_print) # Nostomotti
+        self.kuljetin = Motor(0, 1, 'Kuljetin', debug_print=debug_print) # Kuljetin moottori
+        self.nostomotti = Servo(10, name='Vaaka moottori', min_pos_val=1500, max_pos_val=8150, debug_print=debug_print) # Vaaka moottori
+        # Nosto moottori ei ole tällä hetkellä käytössä/kytketty
 
-        # Anturit
-        self.anturi_a1 = CapacitiveSensor(10, 'Anturi a1', debug_print=debug_print)
-        self.anturi_a2 = CapacitiveSensor(12, 'Anturi a2', debug_print=debug_print)
-        self.anturi_b1 = CapacitiveSensor(14, 'Anturi b1', debug_print=debug_print)
-        self.anturi_b2 = CapacitiveSensor(15, 'Anturi b2', debug_print=debug_print)
+        # IR anturit
+        self.ir_a1 = IRSensor(6, 'Anturi a1', debug_print=debug_print)
+        self.ir_a2 = IRSensor(7, 'Anturi a2', debug_print=debug_print)
+        self.ir_b1 = IRSensor(8, 'Anturi b1', debug_print=debug_print)
+        self.ir_b2 = IRSensor(9, 'Anturi b2', debug_print=debug_print)
 
-        self.anturi_lst = [self.anturi_a1, self.anturi_a2, self.anturi_b1, self.anturi_b2]
+        # Vaaka anturi (voima-anturi)
+        self.vaaka = ForceSensor(28, 'Vaaka', debug_print=debug_print)
+
+        # Värinä anturi
+        self.accelerometer = Accelerometer(x_pin=26, y_pin=27, name='Värinä anturi', debug_print=debug_print)
+
+        # Listaa kaikki anturit
+        self.sensor_lst = [self.ir_a1, self.ir_a2, self.ir_b1, self.ir_b2, self.vaaka, self.accelerometer]
 
         # Start/Stop napit
-        self.start_stop = FlipFlopBtn(2,3, name='Start/Stop napit', debug_print=debug_print)
+        self.start_stop = FlipFlopBtn(17, 16, name='Start/Stop napit', debug_print=debug_print)
 
-        # CSV tiedosto
-        _header_lst = [anturi.get_name() for anturi in self.anturi_lst]
-        self.data_history_csv = CSVFileEditor('sensor_data.csv', _header_lst, debug_print=debug_print)
+        # SD kortti ja CSV tiedosto
+        SDCardSetup(5, 2, 3, 4)
+        _header_lst = [sensor.get_name() for sensor in self.sensor_lst]
+        self.data_history_csv = CSVFileEditor('sd/sensor_data.csv', _header_lst, add_timer=csv_add_timer, debug_print=debug_print)
 
         self.pprint('Initialized')
 
@@ -65,7 +77,7 @@ class Itsetuhokone(Base):
     
     def _update_csv_data(self):
         """Updates data to CSV file"""
-        _data_lst = [anturi.read() for anturi in self.anturi_lst] # Reads values from sensors
+        _data_lst = [sensor.update() for sensor in self.sensor_lst] # Reads values from sensors
         self.data_history_csv.append_data(_data_lst) # Appends data to CSV file
 
     
@@ -84,7 +96,7 @@ class Itsetuhokone(Base):
     def _move_to_start(self):
         """Moves to start position (A1)"""
         self.stprint('Moving to start position')
-        while not self.anturi_a1.read():
+        while not self.ir_a1.read():
             self.kuljetin.run_cw()
 
         self.kuljetin.stop_all()
@@ -97,7 +109,7 @@ class Itsetuhokone(Base):
         Parameters:
         - `from_pos` (str): Position to move from (`A` or `B`)"""
         self.stprint('Moving to middle position')
-        while not self.anturi_a2.read() and not self.anturi_b2.read():
+        while not self.ir_a2.read() and not self.ir_b2.read():
             if from_pos == 'A':
                 self.kuljetin.run_ccw()
             elif from_pos == 'B':
@@ -133,7 +145,6 @@ class Itsetuhokone(Base):
 
             elif self.state == 31: # Tuote keskelle (A->B)
                 self._move_to_middle('A')
-
                 self.state = 32
 
             elif self.state == 32: # Vaaka ylös/Punnitse
@@ -142,7 +153,7 @@ class Itsetuhokone(Base):
                 self.state = 34
 
             elif self.state == 34: # Tuote päätyyn (A->B)
-                while not self.anturi_b1.read():
+                while not self.ir_b1.read():
                     self.kuljetin.run_ccw()
 
                 self.kuljetin.stop_all()
@@ -163,9 +174,15 @@ class Itsetuhokone(Base):
                 self.state = 38
 
             elif self.state == 38: # Tuote päätyyn (B->A)
+                while not self.ir_a1.read():
+                    self.kuljetin.run_cw()
+
+                self.kuljetin.stop_all()
+                self.stprint('At end position')
                 self.state = 39
 
             elif self.state == 39: # Sekvenssi valmis
+                self.stprint('Sequence done')
                 self.state = 30
 
 
@@ -175,9 +192,10 @@ class Itsetuhokone(Base):
             if self.state != 0 and not self.start_stop.check():
                 self.state = 0
                 self.stprint('Stopping')
+                self.kuljetin.stop_all()
 
             sleep(self.sleep_time)
 
 
 
-Itsetuhokone(debug_print=True).run()
+Itsetuhokone(debug_print=False).run()

@@ -1,5 +1,9 @@
 
 
+decimal_len = 0
+i = 3.0
 
-for x in range(6,10):
-    print(x)
+i = f'{i:.{decimal_len}f}'
+# i = round(i, decimal_len)
+
+print(i)

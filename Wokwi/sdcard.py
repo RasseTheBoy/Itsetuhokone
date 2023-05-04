@@ -314,7 +314,7 @@ from utime  import sleep # type:ignore
 
 class SDCardSetup(Base):
     """SD card reader setup class"""
-    def __init__(self, cs_pin:int, sck_pin:int, mosi_pin:int, miso_pin:int, name:str='SD card reader', baudrate:int=1000000, debug_print:bool=True):
+    def __init__(self, cs_pin:int, sck_pin:int, mosi_pin:int, miso_pin:int, name:str='SD card reader', root_folder_name:str='/sd', baudrate:int=1000000, debug_print:bool=True):
         """Initialize SD card reader setup class
         
         Parameters:
@@ -323,6 +323,7 @@ class SDCardSetup(Base):
         - `mosi_pin` (int): Master out slave in pin number
         - `miso_pin` (int): Master in slave out pin number
         - `name` (str): Name of the class instance. Default: 'SD card reader'
+        - `root_folder_name` (str): Name of the root folder. Default: '/sd'
         - `baudrate` (int): SPI baudrate. Default: `1000000`
         - `debug_print` (bool): Print debug messages. Default: `False`"""
         super().__init__(name, debug_print)
@@ -340,7 +341,7 @@ class SDCardSetup(Base):
         while True:
             try:
                 sd = SDCard(spi, Pin(cs_pin)) # Initialize SD card
-                uos.mount(uos.VfsFat(sd), '/sd') # Mount filesystem
+                uos.mount(uos.VfsFat(sd), root_folder_name) # Mount filesystem
                 self.pprint('Initialized')
                 break
             
