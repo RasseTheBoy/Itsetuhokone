@@ -1,6 +1,6 @@
 # Author: Rasmus Ohert
 
-from class_copy import Base
+from base import Base
 from machine    import ADC # type:ignore
 
 
@@ -40,9 +40,3 @@ class ForceSensor(Base):
         raw_val = round(self.pin.read_u16(), self.decimal_len)
         self.pprint(f'Raw value: {raw_val}')
         return raw_val
-        
-    
-    def config(self, **kwargs):
-        """Configure class variables:
-        `name`, `debug_print`, `decimal_len`, `simple_read`, `simple_max_val`, `analog_pin_max_val`"""
-        self._base_config(**kwargs)

@@ -1,6 +1,6 @@
 # Author: Rasmus Ohert
 
-from class_copy import Base
+from base import Base
 from machine import ADC, Pin # type:ignore
 
 
@@ -88,9 +88,3 @@ class Accelerometer(Base):
     def _read_pin_raw(self, pin):
         """Reads raw value from pin"""
         return pin.read_u16() if pin is not None else 0
-
-    
-    def config(self, **kwargs):
-        """Configure class variables:
-        `name`, `debug_print`"""
-        self._base_config(**kwargs)

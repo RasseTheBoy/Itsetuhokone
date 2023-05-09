@@ -1,6 +1,6 @@
 # Author: Rasmus Ohert
 
-from class_copy import Base
+from base import Base
 from machine    import Pin # type:ignore
 
 class FlipFlopBtn(Base):

@@ -1,6 +1,6 @@
 # Author: Rasmus Ohert
 
-from class_copy import Base
+from base import Base
 from machine    import Pin # type:ignore
 
 
@@ -55,9 +55,3 @@ class IRSensor(Base):
         if self.pin.value() == 1:
             return False
         return True
-
-
-    def config(self, **kwargs):
-        """Configure class variables:
-        `name`, `debug_print`"""
-        self._base_config(**kwargs)

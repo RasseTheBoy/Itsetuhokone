@@ -307,7 +307,7 @@ class SDCard:
 
 import uos # type:ignore
 
-from class_copy import Base
+from base import Base
 from machine    import Pin, SPI # type:ignore
 from utime  import sleep # type:ignore
 

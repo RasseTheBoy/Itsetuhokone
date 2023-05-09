@@ -69,17 +69,9 @@ class Base:
         return val
 
 
-    def _base_config(self, **kwargs):
+    def config(self, **kwargs):
         for key, value in kwargs.items():
-            if key == 'debug_print':
-                self.debug_print = value
-            elif key == 'name':
-                self.name = value
-            elif key == 'decimal_len':
-                self.decimal_len = value
-            elif key == 'simple_read':
-                self.simple_read = value
-            elif key == 'simple_max_val':
-                self.simple_max_val = value
-            elif key == 'analog_pin_max_val':
-                self.analog_pin_max_val = value
+            if hasattr(self, key):
+                setattr(self, key, value)
+            else:
+                self.pprint(f'Cannot set attribute: {key} - Attribute does not exist')

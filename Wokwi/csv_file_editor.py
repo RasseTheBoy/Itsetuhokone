@@ -1,6 +1,6 @@
 # Author: Rasmus Ohert
 
-from class_copy import Base
+from base import Base
 from utime  import ticks_ms, ticks_diff # type:ignore
 
 

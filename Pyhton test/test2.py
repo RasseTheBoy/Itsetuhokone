@@ -1,9 +1,8 @@
 
 
-decimal_len = 0
-i = 3.0
+min = 1000
+max = 9000
+mid = (max - min) // 2 + min
 
-i = f'{i:.{decimal_len}f}'
-# i = round(i, decimal_len)
-
-print(i)
+for pos in range(max, min, 50):
+    print(pos)
