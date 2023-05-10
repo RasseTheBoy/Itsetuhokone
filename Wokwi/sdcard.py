@@ -307,10 +307,12 @@ class SDCard:
 
 import uos # type:ignore
 
-from base import Base
+from running_and_error_leds import RunningAndErrorLEDs
 from machine    import Pin, SPI # type:ignore
 from utime  import sleep # type:ignore
+from base import Base
 
+RunErrLeds = RunningAndErrorLEDs()
 
 class SDCardSetup(Base):
     """SD card reader setup class"""
@@ -347,7 +349,10 @@ class SDCardSetup(Base):
             
             except OSError as err:
                 self.pprint('Initialization failed:', err)
-                sleep(1)
+                RunErrLeds.do_all('on')
+                sleep(0.5)
+                RunErrLeds.do_all('off')
+                sleep(0.5)
             
             except Exception as err:
                 self.pprint('Exception:', err)

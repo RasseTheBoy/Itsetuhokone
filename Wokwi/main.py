@@ -4,6 +4,7 @@ from machine import Pin, Timer # type:ignore
 from utime   import sleep # type:ignore
 
 from three_axis_accelerometer   import Accelerometer
+from running_and_error_leds     import RunningAndErrorLEDs
 from csv_file_editor    import CSVFileEditor
 from flip_flop_btn  import FlipFlopBtn
 from force_sensor   import ForceSensor
@@ -13,14 +14,9 @@ from motor  import Motor
 from servo  import Servo
 from base   import Base
 
-RUNNING_LED = Pin(14, Pin.OUT)
-ERROR_LED = Pin(15, Pin.OUT)
 
-def error_blink():
-    RUNNING_LED.off()
-    while True:
-        ERROR_LED.toggle()
-        sleep(0.5)
+RunErrLeds = RunningAndErrorLEDs()
+RUNNING_LED, ERROR_LED = RunErrLeds.get_leds()
 
 
 class Itsetuhokone(Base):
@@ -142,11 +138,12 @@ class Itsetuhokone(Base):
             if self.state == 0: # Idle
                 self.stprint('Idle')
                 if self.start_stop.check():
-                    RUNNING_LED.on()
+                    RUNNING_LED.toggle()
                     self.state = 10
 
             elif self.state == 10: # Start:
                 self.stprint('Starting')
+                RUNNING_LED.on()
                 self.state = 23
 
             elif self.state == 23: # Aja alkuasemaan
@@ -212,4 +209,4 @@ try:
     Itsetuhokone(debug_print=False).run()
 except Exception as err:
     print(f'Error: {err}')
-    error_blink()
+    RunErrLeds.error_blink()

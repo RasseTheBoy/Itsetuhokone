@@ -20,9 +20,13 @@ class FlipFlopBtn(Base):
         self.state = False
 
     
-    def read_pin(self, pin:Pin):
+    def __call__(self):
+        return self.check()
+
+
+    def _read_pin(self, pin:Pin):
         """Reads given pin value, and retuns `True` if button if pin is high; Else `False`"""
-        if pin.value() == 0:
+        if pin.value() == 1:
             return True
         return False
 
@@ -33,12 +37,12 @@ class FlipFlopBtn(Base):
         Returns:
         - `bool`: `True` if flip-flop is set, else `False`"""
         if not self.state:
-            if self.read_pin(self._set_pin) and not self.read_pin(self._reset_pin):
+            if self._read_pin(self._set_pin) and not self._read_pin(self._reset_pin):
                 self.state = True
                 self.pprint('Set to True')
         
         else:
-            if self.read_pin(self._reset_pin):
+            if self._read_pin(self._reset_pin):
                 self.state = False
                 self.pprint('Set to False')
 

@@ -1,17 +1,26 @@
-from machine import Pin, PWM # type:ignore
+
+from machine import Pin, Timer # type:ignore
+
+onboard_led = Pin(25, Pin.OUT)
+onboard_led_timer = Timer(-1)
+onboard_led_timer.init(period=1000, mode=Timer.PERIODIC, callback=lambda t: onboard_led.toggle())
+
+# ------------------------------
+
+from sdcard import SDCardSetup
 from utime import sleep # type:ignore
 
-pwm = PWM(Pin(1))
-pwm.freq(50)
+# Test SD card by writing and reading a file
 
+SDCardSetup(5, 2, 3, 4)
 
-def move_to(to_pos:int):
-    """Move to a specified location."""
-    print(f'Pos: {to_pos}')
-    pwm.duty_u16(to_pos)
-    sleep(0.5)
+for _ in range(3):
+    with open('sd/test.txt', 'w') as f:
+        print('Writing to file...')
+        f.write('Hello world!')
 
-# for pos in range(7000, 9000, 50):
-#     move_to(pos)
+    sleep(8)
 
-move_to(1200)
+    with open('sd/test.txt', 'r') as f:
+        print('Reading from file...')
+        print(f.read())
