@@ -1,4 +1,6 @@
-# THIS IS ONLY A TEST FILE
+# Author: Rasmus Ohert
+
+# THIS IS ONLY A TEST/DEBUG FILE
 # DO NOT USE THIS FILE IN FINAL PRODUCT
 
 from machine import Pin, Timer # type:ignore

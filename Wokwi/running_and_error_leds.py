@@ -39,7 +39,7 @@ class RunningAndErrorLEDs:
             raise ValueError(f'Invalid value for `to_do`: {to_do}')
         
     
-    def error_blink(self, blink_times:int=5) -> None:
+    def error_blink(self, blink_times:int=0) -> None:
         """Blinks error LED.
         
         Parameters:

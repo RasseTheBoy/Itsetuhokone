@@ -1,5 +1,6 @@
 
 from machine import Pin, Timer # type:ignore
+from utime import sleep # type:ignore
 
 onboard_led = Pin(25, Pin.OUT)
 onboard_led_timer = Timer(-1)
@@ -7,20 +8,22 @@ onboard_led_timer.init(period=1000, mode=Timer.PERIODIC, callback=lambda t: onbo
 
 # ------------------------------
 
-from sdcard import SDCardSetup
-from utime import sleep # type:ignore
+from ir_sensor import IRSensor
 
-# Test SD card by writing and reading a file
+ir_a1 = IRSensor(6, 'Anturi a1')
+ir_a2 = IRSensor(7, 'Anturi a2')
+ir_b1 = IRSensor(8, 'Anturi b1')
+ir_b2 = IRSensor(9, 'Anturi b2')
 
-SDCardSetup(5, 2, 3, 4)
+sensor_lst = [ir_a1, ir_a2, ir_b1, ir_b2]
 
-for _ in range(3):
-    with open('sd/test.txt', 'w') as f:
-        print('Writing to file...')
-        f.write('Hello world!')
+def move_to_middle():
+    print('Moving to middle')
+    while not all([ir.read() for ir in [ir_a2, ir_b2]]):
+        print('Moving...')
+        sleep(0.5)
 
-    sleep(8)
+    print('Moved to middle')
 
-    with open('sd/test.txt', 'r') as f:
-        print('Reading from file...')
-        print(f.read())
+
+move_to_middle()

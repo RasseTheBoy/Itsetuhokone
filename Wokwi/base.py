@@ -47,6 +47,15 @@ class Base:
         print(texts[-1]) # Print last item
 
 
+    def praise(self, raise_as, text:str=''):
+        """Prints texts and raises error.
+        
+        Parameters:
+        - `raise_as`: Error to raise"""
+        self.pprint(text)
+        raise raise_as(text)
+
+
     def get_name(self) -> str:
         """Returns name of class.
         

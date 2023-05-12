@@ -3,8 +3,8 @@
 from base import Base
 from machine    import Pin # type:ignore
 
-class FlipFlopBtn(Base):
-    """Simple flip-flop button class."""
+class StartStopLatch(Base):
+    """Simple start-stop latch class."""
     def __init__(self, set_pin_num:int, reset_pin_num:int, name:str='Flip flop button', debug_print:bool=False):
         """Initializes class.
 
@@ -22,6 +22,24 @@ class FlipFlopBtn(Base):
     
     def __call__(self):
         return self.check()
+    
+
+    def read_btn(self, btn:str):
+        if btn == 'set':
+            return self._read_pin(self._set_pin)
+        elif btn == 'reset':
+            return self._read_pin(self._reset_pin)
+        else:
+            self.pprint(f'Invalid button name: {btn}')
+            raise ValueError(f'Invalid button name: {btn}')
+
+
+    def check_both_pressed(self):
+        """Checks if both buttons are pressed.
+
+        Returns:
+        - `bool`: `True` if both buttons are pressed, else `False`"""
+        return self._read_pin(self._set_pin) and self._read_pin(self._reset_pin)
 
 
     def _read_pin(self, pin:Pin):
