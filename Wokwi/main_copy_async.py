@@ -161,7 +161,7 @@ class Itsetuhokone(Base):
             if self.state == 0: # Idle
                 self.stprint('Idle')
                 RUNNING_LED.toggle()
-                if self.start_stop.check_state():
+                if self.start_stop.check():
                     self.state = 10
 
             elif self.state == 10: # Start:
@@ -209,7 +209,7 @@ class Itsetuhokone(Base):
             else: # Invalid state code
                 self.straise(ValueError, f'Invalid state code: {self.state}')
 
-            if self.state != 0 and not self.start_stop.check_state():
+            if self.state != 0 and not self.start_stop.check():
                 RUNNING_LED.off()
                 self.state = 0
                 self.stprint('Stopping')

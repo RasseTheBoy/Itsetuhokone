@@ -10,8 +10,8 @@ class RunningAndErrorLEDs:
         Parameters:
         - `running_led_pin_num` (int): Pin number for running LED. Default: `12`
         - `error_led_pin_num` (int): Pin number for error LED. Default: `13`"""
-        self.running_led = Pin(running_led_pin_num, Pin.OUT)
-        self.error_led = Pin(error_led_pin_num, Pin.OUT)
+        self.running_led = Pin(running_led_pin_num, Pin.OUT, value=0)
+        self.error_led = Pin(error_led_pin_num, Pin.OUT, value=0)
 
         self.leds_lst = [self.running_led, self.error_led]
 

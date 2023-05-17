@@ -19,6 +19,8 @@ class Motor(Base):
         self.relayCw    = Pin(relayCw_pin_num, Pin.OUT)
         self.relayCCw   = Pin(relayCCw_pin_num, Pin.OUT)
 
+        self.stop_all() # Make sure motor is stopped on init
+
 
     def run_cw(self):
         """Run motor clockwise"""
